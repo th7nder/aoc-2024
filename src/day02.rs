@@ -67,12 +67,7 @@ fn is_safe(nums: &Vec<i32>) -> bool {
 pub fn part2(nums: &Vec<Vec<i32>>) -> i32 {
     let mut ans = 0;
     for nums in nums {
-        if is_safe(nums) {
-            ans += 1;
-            continue;
-        }
-
-        'asd: for not_selected in 0..nums.len() {
+        for not_selected in 0..nums.len() {
             let mut new_nums = Vec::new();
 
             for i in 0..nums.len() {
@@ -83,7 +78,7 @@ pub fn part2(nums: &Vec<Vec<i32>>) -> i32 {
 
             if is_safe(&new_nums) {
                 ans += 1;
-                break 'asd;
+                break;
             }
         }
 
