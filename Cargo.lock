@@ -18,6 +18,7 @@ dependencies = [
  "aoc-parse",
  "aoc-runner",
  "aoc-runner-derive",
+ "regex",
 ]
 
 [[package]]
