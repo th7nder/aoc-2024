@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::{cmp::Ordering, collections::{HashMap, HashSet}};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -113,14 +113,39 @@ pub fn part2((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
 
 
 
+    let mut ans = 0;
     for page in pages {
         let invalid_updates = invalid_updates(page, &before, &after);
         if invalid_updates.len() > 0 {
             println!("Invalid: {:?} -> {:?}", page, invalid_updates);
+            let mut page = page.clone();
+            page.sort_by(|a, b| {
+                if let Some(bf) = before.get(b) {
+                    if bf.contains(a) {
+                        return Ordering::Less;
+                    }
+                }
+                if let Some(af) = after.get(b) {
+                    if af.contains(a) {
+                        return Ordering::Greater;
+                    }
+                }
+
+                Ordering::Equal
+            });
+
+
+            let middle = if page.len() % 2 == 0 {
+                page.len() / 2 - 1
+            } else {
+                page.len() / 2
+            };
+
+            ans += page[middle];
         }
     }
 
-    0
+    ans
 }
 
 
@@ -165,7 +190,7 @@ fn part1_example() {
 
 #[test]
 fn part2_example() {
-    assert_eq!(part2(&parse_input(TEST_INPUT)), 143);
+    assert_eq!(part2(&parse_input(TEST_INPUT)), 123);
 }
 
 }
