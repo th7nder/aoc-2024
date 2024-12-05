@@ -45,9 +45,8 @@ fn check_path(matrix: &Vec<Vec<char>>, row: i32, col: i32, dir: (i32, i32), expe
         return Some(path[1]);
     }
 
-    let mut ans = None;
     path.push((row + dir.0, col + dir.1));
-    ans = check_path(matrix, row + dir.0, col + dir.1, dir, &expected, current + 1, path);
+    let ans = check_path(matrix, row + dir.0, col + dir.1, dir, &expected, current + 1, path);
     path.pop();
     ans
 }
