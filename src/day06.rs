@@ -153,11 +153,6 @@ pub fn part2(matrix: &Vec<Vec<char>>) -> usize {
         matrix[entry.0 as usize][entry.1 as usize] = '.';
     }
 
-
-    // let mut visited = HashSet::new();
-    // let mut positions = HashSet::new();
-    // walk_with_loops(&mut matrix, start, start_dir.clone(), &mut visited, &mut positions);
-
     ans
 }
 
