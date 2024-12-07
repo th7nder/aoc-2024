@@ -2,15 +2,15 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 
 #[aoc_generator(day7)]
-fn parse_input(text: &str) -> Vec<(u128, Vec<u128>)> {
+fn parse_input(text: &str) -> Vec<(u64, Vec<u64>)> {
     use aoc_parse::{parser, prelude::*};
     
-    let pairs = parser!(lines(u128 ": " repeat_sep(u128, " ")));
-    let lists: Vec<(u128, Vec<u128>)> = pairs.parse(text).unwrap();
+    let pairs = parser!(lines(u64 ": " repeat_sep(u64, " ")));
+    let lists: Vec<(u64, Vec<u64>)> = pairs.parse(text).unwrap();
     lists
 }
 
-fn verify(test_value: u128, operands: &Vec<u128>, index: usize, current_value: u128) -> bool {
+fn verify(test_value: u64, operands: &Vec<u64>, index: usize, current_value: u64) -> bool {
     if current_value == test_value && index == operands.len() {
         return true;
     }
@@ -22,22 +22,22 @@ fn verify(test_value: u128, operands: &Vec<u128>, index: usize, current_value: u
         || verify(test_value, operands, index + 1, current_value * operands[index]) 
 }
 
-fn times(num: u128) -> u128 {
+fn times(num: u64) -> u64 {
     if num == 0 {
         return 10;
     }
     
     let zeros = (num as f64).log10().ceil() as u32;
-    let res: u128 = 10u128.pow(zeros);
+    let res: u64 = 10u64.pow(zeros);
 
     if res == num {
-        10u128.pow(zeros + 1)
+        10u64.pow(zeros + 1)
     } else {
         res
     }
 }
 
-fn verify_concat(test_value: u128, operands: &Vec<u128>, index: usize, current_value: u128) -> bool {
+fn verify_concat(test_value: u64, operands: &Vec<u64>, index: usize, current_value: u64) -> bool {
     if current_value == test_value && index == operands.len() {
         return true;
     }
@@ -54,7 +54,7 @@ fn verify_concat(test_value: u128, operands: &Vec<u128>, index: usize, current_v
 
 
 #[aoc(day7, part1)]
-pub fn part1(equations: &Vec<(u128, Vec<u128>)>) -> u128 {
+pub fn part1(equations: &Vec<(u64, Vec<u64>)>) -> u64 {
     let mut ans = 0;
     for (test_value, operands) in equations {
         // println!("checking: {} {:?}", test_value, operands);
@@ -67,7 +67,7 @@ pub fn part1(equations: &Vec<(u128, Vec<u128>)>) -> u128 {
 }
 
 #[aoc(day7, part2)]
-pub fn part2(equations: &Vec<(u128, Vec<u128>)>) -> u128 {
+pub fn part2(equations: &Vec<(u64, Vec<u64>)>) -> u64 {
     let mut ans = 0;
     for (test_value, operands) in equations {
         if operands.len() == 1 {
