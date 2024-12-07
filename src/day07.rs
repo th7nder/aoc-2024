@@ -45,17 +45,9 @@ fn verify_concat(test_value: u128, operands: &Vec<u128>, index: usize, current_v
         return false;
     }
 
-    // let a: u128 = format!("{}{}", current_value, operands[index]).parse().unwrap();
-    // let b = current_value * times(operands[index]) + operands[index];
-
-    // if a != b {
-    //     println!("a {} / b {} | {} || {}", a, b, current_value, operands[index]);
-    // }
-
     verify_concat(test_value, operands, index + 1, current_value + operands[index])
         || verify_concat(test_value, operands, index + 1, current_value * operands[index]) 
         || verify_concat(test_value, operands, index + 1, 
-            // format!("{}{}", current_value, operands[index]).parse().unwrap(),
             current_value * times(operands[index]) + operands[index]
         )
 }
