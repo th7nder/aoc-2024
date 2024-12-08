@@ -123,6 +123,7 @@ pub fn part2(matrix: &Vec<Vec<char>>) -> usize {
     let rows = matrix.len();
     let cols = matrix[0].len();
 
+    println!("rows * cols: {}", rows * cols);
     let mut start = (0, 0);
     let start_dir = Direction::Up;
 
