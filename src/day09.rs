@@ -32,11 +32,27 @@ fn create_blocks(sizes: &Vec<u8>) -> Vec<Option<i32>> {
     blocks
 }
 
+fn checksum(blocks: &Vec<Option<i32>>) -> u64 {
+    let mut checksum = 0;
+    
+    for (pos, block) in blocks.iter().enumerate() {
+        if let Some(block) = block {
+            checksum += (pos as u64) * (*block as u64);
+        } else {
+            unreachable!("blocks not correctly computed")
+        }
+    }
+
+    checksum
+}
+
 #[aoc(day9, part1)]
 pub fn part1(sizes: &Vec<u8>) -> u64 {
     let mut blocks = create_blocks(sizes);
 
-    let blanks: Vec<usize> = blocks.iter().enumerate().filter(|(i, c)| c.is_none()).map(|(i, c)| i).collect();
+    let blanks: Vec<usize> = blocks.iter().enumerate()
+        .filter(|(_, c)| c.is_none())
+        .map(|(i, _)| i).collect();
 
     for i in blanks {
         while let Some(None) = blocks.last() {
@@ -48,18 +64,8 @@ pub fn part1(sizes: &Vec<u8>) -> u64 {
 
         blocks[i] = blocks.pop().unwrap();
     }
-    
-    let mut checksum = 0;
-    
-    for (pos, block) in blocks.into_iter().enumerate() {
-        if let Some(block) = block {
-            checksum += (pos as u64) * block as u64;
-        } else {
-            unreachable!("blocks not correctly computed")
-        }
-    }
 
-    checksum
+    checksum(&blocks)
 }
 
 #[cfg(test)]
