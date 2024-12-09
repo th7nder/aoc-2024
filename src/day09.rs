@@ -68,6 +68,17 @@ pub fn part1(sizes: &Vec<u8>) -> u64 {
     checksum(&blocks)
 }
 
+#[aoc(day9, part2)]
+pub fn part2(sizes: &Vec<u8>) -> u64 {
+    let mut blocks = create_blocks(sizes);
+
+    
+
+
+    checksum(&blocks)
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
