@@ -5,12 +5,11 @@ use aoc_runner_derive::{aoc, aoc_generator};
 #[aoc_generator(day1)]
 fn parse_input(text: &str) -> (Vec<i32>, Vec<i32>) {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(lines(i32 "   " i32));
     let lists: Vec<(i32, i32)> = pairs.parse(text).unwrap();
     lists.into_iter().unzip()
 }
-
 
 #[aoc(day1, part1)]
 pub fn part1(lists: &(Vec<i32>, Vec<i32>)) -> i32 {
@@ -19,7 +18,9 @@ pub fn part1(lists: &(Vec<i32>, Vec<i32>)) -> i32 {
     left.sort();
     right.sort();
 
-    let total_min_distance: i32 = left.iter().zip(right.iter())
+    let total_min_distance: i32 = left
+        .iter()
+        .zip(right.iter())
         .map(|(a, b)| (a - b).abs())
         .sum();
 
@@ -30,13 +31,13 @@ pub fn part1(lists: &(Vec<i32>, Vec<i32>)) -> i32 {
 pub fn part2(lists: &(Vec<i32>, Vec<i32>)) -> i32 {
     let (left, right) = (lists.0.clone(), lists.1.clone());
 
-    let count_right = right.into_iter()
-        .fold(HashMap::new(), |mut acc, num| {
-            *acc.entry(num).or_insert(0) += 1;
-            acc
-        });
+    let count_right = right.into_iter().fold(HashMap::new(), |mut acc, num| {
+        *acc.entry(num).or_insert(0) += 1;
+        acc
+    });
 
-    let total: i32 = left.into_iter()
+    let total: i32 = left
+        .into_iter()
         .map(|left_num| left_num * count_right.get(&left_num).unwrap_or(&0))
         .sum();
 

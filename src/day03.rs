@@ -1,5 +1,5 @@
 use aoc_runner_derive::{aoc, aoc_generator};
-use regex::Regex; 
+use regex::Regex;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Mul {
@@ -8,16 +8,15 @@ pub struct Mul {
     enabled: bool,
 }
 
-
 fn extract_from(re: &Regex, text: &str, enabled: bool) -> Vec<Mul> {
     let mut results = vec![];
     for (_, [_, a, b]) in re.captures_iter(text).map(|c| c.extract()) {
         results.push(Mul {
             enabled,
             a: a.parse().unwrap(),
-            b: b.parse().unwrap()
+            b: b.parse().unwrap(),
         });
-    };
+    }
 
     return results;
 }
@@ -33,7 +32,7 @@ fn parse_input(text: &str) -> Vec<Mul> {
     let mut text = text;
 
     loop {
-        let dont = text.find(if enabled { "don't()" } else { "do()" } );
+        let dont = text.find(if enabled { "don't()" } else { "do()" });
         match dont {
             Some(position) => {
                 let found = extract_from(&re, &text[..position], enabled);
@@ -44,17 +43,14 @@ fn parse_input(text: &str) -> Vec<Mul> {
                     text = &text[position + 4..];
                 }
                 enabled = !enabled;
-            },
+            }
             None => {
                 let found = extract_from(&re, text, enabled);
                 results.extend(found);
                 break;
-            },
+            }
         }
-
     }
-    
-
 
     results
 }
@@ -73,8 +69,9 @@ pub fn part2(muls: &Vec<Mul>) -> u32 {
 mod tests {
     use super::*;
 
-    static TEST_INPUT: &str = r"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
-    
+    static TEST_INPUT: &str =
+        r"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))";
+
     #[test]
     fn input() {
         let parsed = parse_input(TEST_INPUT);
@@ -88,7 +85,11 @@ mod tests {
 
     #[test]
     fn part2_example() {
-        assert_eq!(part2(&parse_input("xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")), 48);
+        assert_eq!(
+            part2(&parse_input(
+                "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+            )),
+            48
+        );
     }
-
 }

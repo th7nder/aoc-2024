@@ -1,4 +1,4 @@
-use std::collections::{HashSet};
+use std::collections::HashSet;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -6,8 +6,8 @@ use aoc_runner_derive::{aoc, aoc_generator};
 enum Direction {
     Up,
     Right,
-    Down, 
-    Left
+    Down,
+    Left,
 }
 
 impl Direction {
@@ -22,7 +22,7 @@ impl Direction {
 
     fn delta(&self) -> (i32, i32) {
         match self {
-            Direction::Up => (-1 , 0),
+            Direction::Up => (-1, 0),
             Direction::Right => (0, 1),
             Direction::Down => (1, 0),
             Direction::Left => (0, -1),
@@ -33,14 +33,18 @@ impl Direction {
 #[aoc_generator(day6)]
 fn parse_input(text: &str) -> Vec<Vec<char>> {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(lines(any_char+));
     let lists: Vec<Vec<char>> = pairs.parse(text).unwrap();
     lists
 }
 
-
-fn walk(matrix: &Vec<Vec<char>>, pos: (i32, i32), mut dir: Direction, visited: &mut HashSet<(i32 ,i32)>) {
+fn walk(
+    matrix: &Vec<Vec<char>>,
+    pos: (i32, i32),
+    mut dir: Direction,
+    visited: &mut HashSet<(i32, i32)>,
+) {
     let rows = matrix.len() as i32;
     let cols = matrix[0].len() as i32;
 
@@ -60,8 +64,12 @@ fn walk(matrix: &Vec<Vec<char>>, pos: (i32, i32), mut dir: Direction, visited: &
     walk(matrix, next_pos, dir, visited);
 }
 
-
-fn is_loop(matrix: &Vec<Vec<char>>, pos: (i32, i32), dir: Direction, visited_with_dirs: &mut HashSet<(i32, i32, Direction)>) -> bool {
+fn is_loop(
+    matrix: &Vec<Vec<char>>,
+    pos: (i32, i32),
+    dir: Direction,
+    visited_with_dirs: &mut HashSet<(i32, i32, Direction)>,
+) -> bool {
     let rows = matrix.len() as i32;
     let cols = matrix[0].len() as i32;
 
@@ -90,7 +98,6 @@ fn is_loop(matrix: &Vec<Vec<char>>, pos: (i32, i32), dir: Direction, visited_wit
     return is_l;
 }
 
-
 #[aoc(day6, part1)]
 pub fn part1(matrix: &Vec<Vec<char>>) -> usize {
     let mut matrix = matrix.clone();
@@ -112,7 +119,6 @@ pub fn part1(matrix: &Vec<Vec<char>>) -> usize {
 
     let mut visited = HashSet::new();
     walk(&matrix, start, start_dir, &mut visited);
-
 
     visited.len()
 }
@@ -140,7 +146,6 @@ pub fn part2(matrix: &Vec<Vec<char>>) -> usize {
     let mut path = HashSet::new();
     walk(&matrix, start, start_dir.clone(), &mut path);
 
-
     let mut ans = 0;
     let mut visited = HashSet::new();
     for entry in path {
@@ -157,9 +162,6 @@ pub fn part2(matrix: &Vec<Vec<char>>) -> usize {
     ans
 }
 
-
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -174,7 +176,7 @@ mod tests {
 ........#.
 #.........
 ......#...";
-    
+
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 41);

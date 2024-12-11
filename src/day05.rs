@@ -1,11 +1,14 @@
-use std::{cmp::Ordering, collections::{HashMap, HashSet}};
+use std::{
+    cmp::Ordering,
+    collections::{HashMap, HashSet},
+};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day5)]
 fn parse_input(text: &str) -> (Vec<(u32, u32)>, Vec<Vec<u32>>) {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(sections(
         lines(u32 "|" u32)
         lines(repeat_sep(u32, ","))
@@ -17,9 +20,11 @@ fn parse_input(text: &str) -> (Vec<(u32, u32)>, Vec<Vec<u32>>) {
     (orders, patches)
 }
 
-
-
-fn is_page_valid(page: &Vec<u32>, before: &HashMap<&u32, HashSet<&u32>>, after: &HashMap<&u32, HashSet<&u32>>) -> bool {
+fn is_page_valid(
+    page: &Vec<u32>,
+    before: &HashMap<&u32, HashSet<&u32>>,
+    after: &HashMap<&u32, HashSet<&u32>>,
+) -> bool {
     for (index, update) in page.iter().enumerate() {
         for after_update in &page[index + 1..] {
             if let Some(bef) = before.get(update) {
@@ -41,7 +46,11 @@ fn is_page_valid(page: &Vec<u32>, before: &HashMap<&u32, HashSet<&u32>>, after: 
     return true;
 }
 
-fn invalid_updates(page: &Vec<u32>, before: &HashMap<&u32, HashSet<&u32>>, after: &HashMap<&u32, HashSet<&u32>>) -> Vec<u32> {
+fn invalid_updates(
+    page: &Vec<u32>,
+    before: &HashMap<&u32, HashSet<&u32>>,
+    after: &HashMap<&u32, HashSet<&u32>>,
+) -> Vec<u32> {
     let mut invalid_updates = Vec::new();
     for (index, update) in page.iter().enumerate() {
         let mut valid = true;
@@ -81,7 +90,6 @@ pub fn part1((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
         after.entry(x).or_insert(HashSet::new()).insert(y);
     }
 
-
     let mut ans = 0;
     for page in pages {
         if is_page_valid(page, &before, &after) {
@@ -94,7 +102,7 @@ pub fn part1((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
 
             ans += page[middle];
             // println!("Mid: {}", page[middle]);
-        }   
+        }
     }
 
     ans
@@ -110,8 +118,6 @@ pub fn part2((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
         before.entry(y).or_insert(HashSet::new()).insert(x);
         after.entry(x).or_insert(HashSet::new()).insert(y);
     }
-
-
 
     let mut ans = 0;
     for page in pages {
@@ -134,7 +140,6 @@ pub fn part2((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
                 Ordering::Equal
             });
 
-
             let middle = if page.len() % 2 == 0 {
                 page.len() / 2 - 1
             } else {
@@ -147,7 +152,6 @@ pub fn part2((orders, pages): &(Vec<(u32, u32)>, Vec<Vec<u32>>)) -> u32 {
 
     ans
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -182,15 +186,13 @@ mod tests {
 61,13,29
 97,13,75,29,47";
 
+    #[test]
+    fn part1_example() {
+        assert_eq!(part1(&parse_input(TEST_INPUT)), 143);
+    }
 
-#[test]
-fn part1_example() {
-    assert_eq!(part1(&parse_input(TEST_INPUT)), 143);
-}
-
-#[test]
-fn part2_example() {
-    assert_eq!(part2(&parse_input(TEST_INPUT)), 123);
-}
-
+    #[test]
+    fn part2_example() {
+        assert_eq!(part2(&parse_input(TEST_INPUT)), 123);
+    }
 }

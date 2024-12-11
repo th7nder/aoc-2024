@@ -5,15 +5,20 @@ use aoc_runner_derive::{aoc, aoc_generator};
 #[aoc_generator(day4)]
 fn parse_input(text: &str) -> Vec<Vec<char>> {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(lines(any_char+));
     let lists: Vec<Vec<char>> = pairs.parse(text).unwrap();
     lists
 }
 
-
-
-fn check(matrix: &Vec<Vec<char>>, row: i32, col: i32, dir: (i32, i32), expected: &Vec<char>, current: usize) -> u32 {
+fn check(
+    matrix: &Vec<Vec<char>>,
+    row: i32,
+    col: i32,
+    dir: (i32, i32),
+    expected: &Vec<char>,
+    current: usize,
+) -> u32 {
     let rows = matrix.len() as i32;
     let cols = matrix[0].len() as i32;
     if row < 0 || row >= rows || col < 0 || col >= cols {
@@ -27,12 +32,26 @@ fn check(matrix: &Vec<Vec<char>>, row: i32, col: i32, dir: (i32, i32), expected:
     }
 
     let mut ans = 0;
-    ans += check(matrix, row + dir.0, col + dir.1, dir, &expected, current + 1);
+    ans += check(
+        matrix,
+        row + dir.0,
+        col + dir.1,
+        dir,
+        &expected,
+        current + 1,
+    );
     ans
 }
 
-
-fn check_path(matrix: &Vec<Vec<char>>, row: i32, col: i32, dir: (i32, i32), expected: &Vec<char>, current: usize, path: &mut Vec<(i32, i32)>) -> Option<(i32, i32)> {
+fn check_path(
+    matrix: &Vec<Vec<char>>,
+    row: i32,
+    col: i32,
+    dir: (i32, i32),
+    expected: &Vec<char>,
+    current: usize,
+    path: &mut Vec<(i32, i32)>,
+) -> Option<(i32, i32)> {
     let rows = matrix.len() as i32;
     let cols = matrix[0].len() as i32;
     if row < 0 || row >= rows || col < 0 || col >= cols {
@@ -46,13 +65,18 @@ fn check_path(matrix: &Vec<Vec<char>>, row: i32, col: i32, dir: (i32, i32), expe
     }
 
     path.push((row + dir.0, col + dir.1));
-    let ans = check_path(matrix, row + dir.0, col + dir.1, dir, &expected, current + 1, path);
+    let ans = check_path(
+        matrix,
+        row + dir.0,
+        col + dir.1,
+        dir,
+        &expected,
+        current + 1,
+        path,
+    );
     path.pop();
     ans
 }
-
-
-
 
 #[aoc(day4, part1)]
 pub fn part1(matrix: &Vec<Vec<char>>) -> u32 {
@@ -92,7 +116,9 @@ pub fn part2(matrix: &Vec<Vec<char>>) -> usize {
             let dirs = vec![(-1, -1), (1, 1), (1, -1), (-1, 1)];
             for dir in dirs {
                 path.push((row as i32, col as i32));
-                if let Some(point) = check_path(matrix, row as i32, col as i32, dir, &expected, 0, &mut path) {
+                if let Some(point) =
+                    check_path(matrix, row as i32, col as i32, dir, &expected, 0, &mut path)
+                {
                     *a.entry(point).or_insert(0) += 1;
                 }
                 path.pop();
@@ -117,7 +143,7 @@ SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
 MXMXAXMASX";
-    
+
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 18);

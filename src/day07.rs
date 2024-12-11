@@ -1,10 +1,9 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
-
 #[aoc_generator(day7)]
 fn parse_input(text: &str) -> Vec<(u64, Vec<u64>)> {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(lines(u64 ": " repeat_sep(u64, " ")));
     let lists: Vec<(u64, Vec<u64>)> = pairs.parse(text).unwrap();
     lists
@@ -18,15 +17,24 @@ fn verify(test_value: u64, operands: &Vec<u64>, index: usize, current_value: u64
         return false;
     }
 
-    verify(test_value, operands, index + 1, current_value + operands[index])
-        || verify(test_value, operands, index + 1, current_value * operands[index]) 
+    verify(
+        test_value,
+        operands,
+        index + 1,
+        current_value + operands[index],
+    ) || verify(
+        test_value,
+        operands,
+        index + 1,
+        current_value * operands[index],
+    )
 }
 
 fn times(num: u64) -> u64 {
     if num == 0 {
         return 10;
     }
-    
+
     let zeros = (num as f64).log10().ceil() as u32;
     let res: u64 = 10u64.pow(zeros);
 
@@ -45,13 +53,23 @@ fn verify_concat(test_value: u64, operands: &Vec<u64>, index: usize, current_val
         return false;
     }
 
-    verify_concat(test_value, operands, index + 1, current_value + operands[index])
-        || verify_concat(test_value, operands, index + 1, current_value * operands[index]) 
-        || verify_concat(test_value, operands, index + 1, 
-            current_value * times(operands[index]) + operands[index]
-        )
+    verify_concat(
+        test_value,
+        operands,
+        index + 1,
+        current_value + operands[index],
+    ) || verify_concat(
+        test_value,
+        operands,
+        index + 1,
+        current_value * operands[index],
+    ) || verify_concat(
+        test_value,
+        operands,
+        index + 1,
+        current_value * times(operands[index]) + operands[index],
+    )
 }
-
 
 #[aoc(day7, part1)]
 pub fn part1(equations: &Vec<(u64, Vec<u64>)>) -> u64 {
@@ -82,8 +100,6 @@ pub fn part2(equations: &Vec<(u64, Vec<u64>)>) -> u64 {
     ans
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -97,7 +113,7 @@ mod tests {
 192: 17 8 14
 21037: 9 7 18 13
 292: 11 6 16 20";
-    
+
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 3749);

@@ -1,9 +1,11 @@
+use std::collections::HashMap;
+
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day11)]
 fn parse_input(text: &str) -> Vec<u64> {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(line(repeat_sep(u64, " ")));
     let lists: Vec<u64> = pairs.parse(text).unwrap();
     lists
@@ -42,7 +44,7 @@ fn blink(pebbles: Vec<u64>) -> Vec<u64> {
         if pebble == 0 {
             new_pebbles.push(1);
         } else if digits.len() % 2 == 0 {
-            new_pebbles.push(from_digits(&digits[digits.len() / 2..], digits.len() / 2)); 
+            new_pebbles.push(from_digits(&digits[digits.len() / 2..], digits.len() / 2));
             new_pebbles.push(from_digits(&digits[0..digits.len() / 2], digits.len() / 2));
         } else {
             new_pebbles.push(pebble * 2024);
@@ -63,14 +65,63 @@ fn part1(pebbles: &Vec<u64>) -> usize {
     pebbles.len()
 }
 
+fn count(stone: u64, steps: u64, cache: &mut HashMap<(u64, u64), u64>) -> u64 {
+    if steps == 0 {
+        return 1;
+    }
+    if cache.contains_key(&(stone, steps)) {
+        return cache[&(stone, steps)];
+    }
+
+    let res = if stone == 0 {
+        count(1, steps - 1, cache)
+    } else {
+        let digits = digits(stone);
+        if digits.len() % 2 == 0 {
+            count(
+                from_digits(&digits[digits.len() / 2..], digits.len() / 2),
+                steps - 1,
+                cache,
+            ) + count(
+                from_digits(&digits[0..digits.len() / 2], digits.len() / 2),
+                steps - 1,
+                cache,
+            )
+        } else {
+            count(stone * 2024, steps - 1, cache)
+        }
+    };
+
+    cache.insert((stone, steps), res);
+    res
+}
+
+#[aoc(day11, part2)]
+fn part2(pebbles: &Vec<u64>) -> u64 {
+    let mut sum = 0;
+    let mut cache = HashMap::new();
+    for stone in pebbles {
+        sum += count(*stone, 75, &mut cache);
+    }
+
+    sum
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     static TEST_INPUT: &str = r"125 17";
-    
+
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 55312);
     }
+
+    #[test]
+    fn part2_example() {
+        assert_eq!(part2(&parse_input(TEST_INPUT)), 65601038650482);
+    }
 }
+
+// every 1, after 4 iterations, gives back 2024 + 6 numbers

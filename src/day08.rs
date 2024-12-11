@@ -5,12 +5,11 @@ use aoc_runner_derive::{aoc, aoc_generator};
 #[aoc_generator(day8)]
 fn parse_input(text: &str) -> Vec<Vec<char>> {
     use aoc_parse::{parser, prelude::*};
-    
+
     let pairs = parser!(lines(any_char+));
     let lists: Vec<Vec<char>> = pairs.parse(text).unwrap();
     lists
 }
-
 
 #[aoc(day8, part1)]
 pub fn part1(map: &Vec<Vec<char>>) -> usize {
@@ -23,9 +22,12 @@ pub fn part1(map: &Vec<Vec<char>>) -> usize {
         for col in 0..cols {
             let frequency = map[row as usize][col as usize];
 
-            if frequency != '.'  && frequency != '#' {
+            if frequency != '.' && frequency != '#' {
                 let frequency = map[row as usize][col as usize];
-                antennas.entry(frequency).or_insert(Vec::new()).push((row, col));
+                antennas
+                    .entry(frequency)
+                    .or_insert(Vec::new())
+                    .push((row, col));
             }
         }
     }
@@ -40,7 +42,6 @@ pub fn part1(map: &Vec<Vec<char>>) -> usize {
                 continue;
             }
 
-
             let positions = antennas.get(&frequency).unwrap();
             for (other_row, other_col) in positions {
                 if *other_row == row && *other_col == col {
@@ -53,7 +54,11 @@ pub fn part1(map: &Vec<Vec<char>>) -> usize {
                 let antinode_row = row + 2 * (-dr);
                 let antinode_col = col + 2 * (-dc);
 
-                if antinode_row < 0 || antinode_row >= rows || antinode_col < 0 || antinode_col >= cols {
+                if antinode_row < 0
+                    || antinode_row >= rows
+                    || antinode_col < 0
+                    || antinode_col >= cols
+                {
                     continue;
                 }
 
@@ -62,7 +67,6 @@ pub fn part1(map: &Vec<Vec<char>>) -> usize {
             }
         }
     }
-
 
     antinodes.len()
 }
@@ -78,9 +82,12 @@ pub fn part2(map: &Vec<Vec<char>>) -> usize {
         for col in 0..cols {
             let frequency = map[row as usize][col as usize];
 
-            if frequency != '.'  && frequency != '#' {
+            if frequency != '.' && frequency != '#' {
                 let frequency = map[row as usize][col as usize];
-                antennas.entry(frequency).or_insert(Vec::new()).push((row, col));
+                antennas
+                    .entry(frequency)
+                    .or_insert(Vec::new())
+                    .push((row, col));
             }
         }
     }
@@ -95,7 +102,6 @@ pub fn part2(map: &Vec<Vec<char>>) -> usize {
                 continue;
             }
 
-
             let positions = antennas.get(&frequency).unwrap();
             for (other_row, other_col) in positions {
                 if *other_row == row && *other_col == col {
@@ -108,17 +114,20 @@ pub fn part2(map: &Vec<Vec<char>>) -> usize {
                 for times in 1..1000 {
                     let antinode_row = row + times * (-dr);
                     let antinode_col = col + times * (-dc);
-    
-                    if antinode_row < 0 || antinode_row >= rows || antinode_col < 0 || antinode_col >= cols {
+
+                    if antinode_row < 0
+                        || antinode_row >= rows
+                        || antinode_col < 0
+                        || antinode_col >= cols
+                    {
                         break;
                     }
-    
+
                     antinodes.insert((antinode_row, antinode_col));
                 }
             }
         }
     }
-
 
     antinodes.len()
 }
@@ -139,7 +148,7 @@ mod tests {
 .........A..
 ..........#.
 ..........#..";
-    
+
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 14);
@@ -149,5 +158,4 @@ mod tests {
     fn part2_example() {
         assert_eq!(part2(&parse_input(TEST_INPUT)), 34);
     }
-
 }
