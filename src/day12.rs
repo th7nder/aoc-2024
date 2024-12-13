@@ -1,4 +1,3 @@
-
 use std::collections::{HashSet, VecDeque};
 
 use aoc_runner_derive::{aoc, aoc_generator};
@@ -12,9 +11,13 @@ fn parse_input(text: &str) -> Vec<Vec<char>> {
     lists
 }
 
-
-fn fence(map: &Vec<Vec<char>>, visited: &mut HashSet<(i32, i32)>, region_id: char, (sr, sc): (i32, i32)) -> (usize, usize) {
-    let (rows, cols) = (map.len() as i32, map[0].len() as i32); 
+fn fence(
+    map: &Vec<Vec<char>>,
+    visited: &mut HashSet<(i32, i32)>,
+    region_id: char,
+    (sr, sc): (i32, i32),
+) -> (usize, usize) {
+    let (rows, cols) = (map.len() as i32, map[0].len() as i32);
 
     let mut queue = VecDeque::new();
     queue.push_back((sr, sc));
@@ -46,8 +49,13 @@ fn fence(map: &Vec<Vec<char>>, visited: &mut HashSet<(i32, i32)>, region_id: cha
     (area, perimeter)
 }
 
-fn sides(map: &Vec<Vec<char>>, visited: &mut HashSet<(i32, i32)>, region_id: char, (sr, sc): (i32, i32)) -> (usize, usize) {
-    let (rows, cols) = (map.len() as i32, map[0].len() as i32); 
+fn sides(
+    map: &Vec<Vec<char>>,
+    visited: &mut HashSet<(i32, i32)>,
+    region_id: char,
+    (sr, sc): (i32, i32),
+) -> (usize, usize) {
+    let (rows, cols) = (map.len() as i32, map[0].len() as i32);
 
     let mut queue = VecDeque::new();
     queue.push_back((sr, sc));
@@ -90,7 +98,7 @@ fn sides(map: &Vec<Vec<char>>, visited: &mut HashSet<(i32, i32)>, region_id: cha
         if different(r, c + 1) && different(r + 1, c) {
             sides += 1;
         }
-        if different(r, c + 1) && !different(r - 1,c) && !different(r - 1, c + 1) {
+        if different(r, c + 1) && !different(r - 1, c) && !different(r - 1, c + 1) {
             sides += 1;
         }
 
@@ -116,9 +124,8 @@ fn sides(map: &Vec<Vec<char>>, visited: &mut HashSet<(i32, i32)>, region_id: cha
 
 #[aoc(day12, part1)]
 fn part1(map: &Vec<Vec<char>>) -> usize {
-
     let mut visited = HashSet::new();
-    let (rows, cols) = (map.len(), map[0].len()); 
+    let (rows, cols) = (map.len(), map[0].len());
 
     let mut ans = 0;
     for row in 0..rows {
@@ -129,20 +136,19 @@ fn part1(map: &Vec<Vec<char>>) -> usize {
             }
             visited.insert((row as i32, col as i32));
 
-            let (area, perimeter) = fence(map, &mut visited, region, (row as i32, col as i32 ));
+            let (area, perimeter) = fence(map, &mut visited, region, (row as i32, col as i32));
             // println!("Region: {}, area: {}, perimeter: {}", region, area, perimeter);
             ans += area * perimeter;
         }
     }
 
-    ans 
+    ans
 }
 
 #[aoc(day12, part2)]
 fn part2(map: &Vec<Vec<char>>) -> usize {
-
     let mut visited = HashSet::new();
-    let (rows, cols) = (map.len(), map[0].len()); 
+    let (rows, cols) = (map.len(), map[0].len());
 
     let mut ans = 0;
     for row in 0..rows {
@@ -154,12 +160,18 @@ fn part2(map: &Vec<Vec<char>>) -> usize {
             visited.insert((row as i32, col as i32));
 
             let (area, sides) = sides(map, &mut visited, region, (row as i32, col as i32));
-            println!("Region: {}, area: {}, sides: {}, total, {}", region, area, sides, area * sides);
+            println!(
+                "Region: {}, area: {}, sides: {}, total, {}",
+                region,
+                area,
+                sides,
+                area * sides
+            );
             ans += area * sides;
         }
     }
 
-    ans 
+    ans
 }
 
 #[cfg(test)]
@@ -179,7 +191,9 @@ OOOOO";
 
     #[test]
     fn part1_example2() {
-        assert_eq!(part1(&parse_input(r"RRRRIICCFF
+        assert_eq!(
+            part1(&parse_input(
+                r"RRRRIICCFF
 RRRRIICCCF
 VVRRRCCFFF
 VVRCCCJFFF
@@ -188,48 +202,73 @@ VVIVCCJJEE
 VVIIICJJEE
 MIIIIIJJEE
 MIIISIJEEE
-MMMISSJEEE")), 1930);
+MMMISSJEEE"
+            )),
+            1930
+        );
     }
 
     #[test]
     fn part2_example() {
-        assert_eq!(part2(&parse_input(r"AAAA
+        assert_eq!(
+            part2(&parse_input(
+                r"AAAA
 BBCD
 BBCC
-EEEC")), 80);
+EEEC"
+            )),
+            80
+        );
     }
 
     #[test]
     fn part2_example2() {
-        assert_eq!(part2(&parse_input(r"OOOOO
+        assert_eq!(
+            part2(&parse_input(
+                r"OOOOO
 OXOXO
 OOOOO
 OXOXO
-OOOOO")), 436);
+OOOOO"
+            )),
+            436
+        );
     }
 
     #[test]
     fn part2_example3() {
-        assert_eq!(part2(&parse_input(r"EEEEE
+        assert_eq!(
+            part2(&parse_input(
+                r"EEEEE
 EXXXX
 EEEEE
 EXXXX
-EEEEE")), 236);
+EEEEE"
+            )),
+            236
+        );
     }
 
     #[test]
     fn part2_example4() {
-        assert_eq!(part2(&parse_input(r"AAAAAA
+        assert_eq!(
+            part2(&parse_input(
+                r"AAAAAA
 AAABBA
 AAABBA
 ABBAAA
 ABBAAA
-AAAAAA")), 368);
+AAAAAA"
+            )),
+            368
+        );
     }
 
     #[test]
     fn part2_example5() {
-        assert_eq!(part2(&parse_input(r"RRRRIICCFF
+        assert_eq!(
+            part2(&parse_input(
+                r"RRRRIICCFF
 RRRRIICCCF
 VVRRRCCFFF
 VVRCCCJFFF
@@ -238,6 +277,9 @@ VVIVCCJJEE
 VVIIICJJEE
 MIIIIIJJEE
 MIIISIJEEE
-MMMISSJEEE")), 1206);
+MMMISSJEEE"
+            )),
+            1206
+        );
     }
 }
