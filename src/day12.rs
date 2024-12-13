@@ -160,13 +160,6 @@ fn part2(map: &Vec<Vec<char>>) -> usize {
             visited.insert((row as i32, col as i32));
 
             let (area, sides) = sides(map, &mut visited, region, (row as i32, col as i32));
-            println!(
-                "Region: {}, area: {}, sides: {}, total, {}",
-                region,
-                area,
-                sides,
-                area * sides
-            );
             ans += area * sides;
         }
     }

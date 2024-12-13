@@ -1,9 +1,9 @@
 use aoc_runner_derive::{aoc, aoc_generator};
 
 struct Machine {
-    a: (usize, usize),
-    b: (usize, usize),
-    target: (usize, usize),
+    a: (i64, i64),
+    b: (i64, i64),
+    target: (i64, i64),
 }
 
 #[aoc_generator(day13)]
@@ -11,11 +11,11 @@ fn parse_input(text: &str) -> Vec<Machine> {
     use aoc_parse::{parser, prelude::*};
 
     let pairs = parser!(sections(
-        line("Button A: X+" usize ", Y+" usize)
-        line("Button B: X+" usize ", Y+" usize)
-        line("Prize: X=" usize ", Y=" usize)
+        line("Button A: X+" i64 ", Y+" i64)
+        line("Button B: X+" i64 ", Y+" i64)
+        line("Prize: X=" i64 ", Y=" i64)
     ));
-    let s: Vec<((usize, usize), (usize, usize), (usize, usize))> = pairs.parse(text).unwrap();
+    let s: Vec<((i64, i64), (i64, i64), (i64, i64))> = pairs.parse(text).unwrap();
 
     let mut machines = vec![];
     for sect in s {
@@ -30,7 +30,7 @@ fn parse_input(text: &str) -> Vec<Machine> {
 }
 
 #[aoc(day13, part1)]
-fn part1(machines: &Vec<Machine>) -> usize {
+fn part1(machines: &Vec<Machine>) -> i64 {
     let mut min_total = 0;
     for (i, machine) in machines.iter().enumerate() {
         let (ax, ay) = machine.a;
@@ -55,6 +55,32 @@ fn part1(machines: &Vec<Machine>) -> usize {
         }
 
         // println!("Machine {}, min: {:?}", i, min);
+    }
+
+    min_total
+}
+
+#[aoc(day13, part2)]
+fn part2(machines: &Vec<Machine>) -> i64 {
+    let mut min_total = 0;
+    for (i, machine) in machines.iter().enumerate() {
+        let (ax, ay) = machine.a;
+        let (bx, by) = machine.b;
+        let (target_x, target_y) = (machine.target.0 + 10000000000000, machine.target.1 + 10000000000000);
+
+        let Q = ax;
+        let W = bx;
+        let T = ay;
+        let U = by;
+
+        let x = (target_x * U - target_y * W) / (Q * U - T * W); 
+        let y = (target_y * Q - target_x * T) / (Q * U - T * W);
+
+
+        // println!("Machine {}, min: {:?}", i, 3 * x + y);
+        if (Q * x + W * y) == target_x && (T * x + U * y) == target_y {
+            min_total += 3 * x + y;
+        }
     }
 
     min_total
@@ -88,5 +114,10 @@ Prize: X=18641, Y=10279";
     #[test]
     fn part1_example() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 480);
+    }
+
+    #[test]
+    fn part2_example() {
+        assert_eq!(part2(&parse_input(TEST_INPUT)), 480);
     }
 }
