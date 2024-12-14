@@ -32,7 +32,7 @@ fn parse_input(text: &str) -> Vec<Machine> {
 #[aoc(day13, part1)]
 fn part1(machines: &Vec<Machine>) -> i64 {
     let mut min_total = 0;
-    for (i, machine) in machines.iter().enumerate() {
+    for (_, machine) in machines.iter().enumerate() {
         let (ax, ay) = machine.a;
         let (bx, by) = machine.b;
         let (target_x, target_y) = machine.target;
@@ -63,22 +63,22 @@ fn part1(machines: &Vec<Machine>) -> i64 {
 #[aoc(day13, part2)]
 fn part2(machines: &Vec<Machine>) -> i64 {
     let mut min_total = 0;
-    for (i, machine) in machines.iter().enumerate() {
+    for (_, machine) in machines.iter().enumerate() {
         let (ax, ay) = machine.a;
         let (bx, by) = machine.b;
         let (target_x, target_y) = (machine.target.0 + 10000000000000, machine.target.1 + 10000000000000);
 
-        let Q = ax;
-        let W = bx;
-        let T = ay;
-        let U = by;
+        let q = ax;
+        let w: i64 = bx;
+        let t = ay;
+        let u = by;
 
-        let x = (target_x * U - target_y * W) / (Q * U - T * W); 
-        let y = (target_y * Q - target_x * T) / (Q * U - T * W);
+        let x = (target_x * u - target_y * w) / (q * u - t * w); 
+        let y = (target_y * q - target_x * t) / (q * u - t * w);
 
 
         // println!("Machine {}, min: {:?}", i, 3 * x + y);
-        if (Q * x + W * y) == target_x && (T * x + U * y) == target_y {
+        if (q * x + w * y) == target_x && (t * x + u * y) == target_y {
             min_total += 3 * x + y;
         }
     }
