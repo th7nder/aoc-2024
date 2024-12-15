@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[derive(Clone)]
@@ -23,12 +21,10 @@ fn parse_input(text: &str) -> Vec<Robot> {
 
     let pairs = parser!(lines("p=" i32 "," i32 " v=" i32 "," i32));
     let lists: Vec<(i32, i32, i32, i32)> = pairs.parse(text).unwrap();
-    lists.into_iter().map(|(px, py, vx, vy)| Robot {
-        px,
-        py,
-        vx,
-        vy,
-    }).collect()
+    lists
+        .into_iter()
+        .map(|(px, py, vx, vy)| Robot { px, py, vx, vy })
+        .collect()
 }
 
 fn step_all(robots: &mut Vec<Robot>, width: i32, height: i32) {
@@ -76,7 +72,7 @@ fn print_tree(robots: &Vec<Vec<bool>>, width: i32, height: i32) {
 }
 
 fn safety_factor(robots: &Vec<Robot>, width: i32, height: i32) -> i32 {
-    // 7 / 2 = 3 
+    // 7 / 2 = 3
     // 11 / 2 = 5
     let mid_width = width / 2;
     let mid_height = height / 2;
@@ -100,13 +96,10 @@ fn safety_factor(robots: &Vec<Robot>, width: i32, height: i32) -> i32 {
                 bottom_right += 1;
             }
         }
-    
     }
-
 
     top_left * top_right * bottom_left * bottom_right
 }
-
 
 #[aoc(day14, part1)]
 fn part1(robots: &Vec<Robot>) -> i32 {
@@ -147,11 +140,10 @@ fn flood(x: i32, y: i32, map: &mut Vec<Vec<bool>>) -> usize {
         return 0;
     }
 
-
     map[y as usize][x as usize] = false;
 
-    return 1 
-        + flood(x + 1, y, map) 
+    return 1
+        + flood(x + 1, y, map)
         + flood(x - 1, y, map)
         + flood(x, y + 1, map)
         + flood(x, y - 1, map);
@@ -189,7 +181,6 @@ fn part2(robots: &Vec<Robot>) -> i32 {
 
     0
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -238,5 +229,4 @@ p=9,5 v=-3,-3";
 
         assert_eq!(safety_factor(&robots, WIDTH, HEIGHT), 12);
     }
-
 }

@@ -66,16 +66,18 @@ fn part2(machines: &Vec<Machine>) -> i64 {
     for (_, machine) in machines.iter().enumerate() {
         let (ax, ay) = machine.a;
         let (bx, by) = machine.b;
-        let (target_x, target_y) = (machine.target.0 + 10000000000000, machine.target.1 + 10000000000000);
+        let (target_x, target_y) = (
+            machine.target.0 + 10000000000000,
+            machine.target.1 + 10000000000000,
+        );
 
         let q = ax;
         let w: i64 = bx;
         let t = ay;
         let u = by;
 
-        let x = (target_x * u - target_y * w) / (q * u - t * w); 
+        let x = (target_x * u - target_y * w) / (q * u - t * w);
         let y = (target_y * q - target_x * t) / (q * u - t * w);
-
 
         // println!("Machine {}, min: {:?}", i, 3 * x + y);
         if (q * x + w * y) == target_x && (t * x + u * y) == target_y {
