@@ -243,8 +243,6 @@ fn part1(map: &Vec<Vec<char>>) -> i32 {
 
 #[aoc(day16, part2)]
 fn part2(map: &Vec<Vec<char>>) -> i32 {
-    let mut end = find_end(map);
-
     let score = dijkstra2(map);
 
     score

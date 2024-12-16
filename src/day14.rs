@@ -33,29 +33,7 @@ fn step_all(robots: &mut Vec<Robot>, width: i32, height: i32) {
     }
 }
 
-fn print(robots: &Vec<Robot>, width: i32, height: i32) {
-    for robot in robots {
-        println!("Robot: {} {} -> {}", robot.px, robot.py, robot.py % height);
-    }
 
-    for y in 0..height {
-        for x in 0..width {
-            let mut count = 0;
-            for robot in robots {
-                if robot.px == x && robot.py == y {
-                    count += 1;
-                }
-            }
-            if count == 0 {
-                print!(".");
-            } else {
-                print!("{}", count);
-            }
-        }
-        println!();
-    }
-    println!();
-}
 
 fn print_tree(robots: &Vec<Vec<bool>>, width: i32, height: i32) {
     for y in 0..height {
@@ -228,5 +206,29 @@ p=9,5 v=-3,-3";
         }
 
         assert_eq!(safety_factor(&robots, WIDTH, HEIGHT), 12);
+    }
+
+    fn print(robots: &Vec<Robot>, width: i32, height: i32) {
+        for robot in robots {
+            println!("Robot: {} {} -> {}", robot.px, robot.py, robot.py % height);
+        }
+    
+        for y in 0..height {
+            for x in 0..width {
+                let mut count = 0;
+                for robot in robots {
+                    if robot.px == x && robot.py == y {
+                        count += 1;
+                    }
+                }
+                if count == 0 {
+                    print!(".");
+                } else {
+                    print!("{}", count);
+                }
+            }
+            println!();
+        }
+        println!();
     }
 }
