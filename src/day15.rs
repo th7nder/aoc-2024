@@ -274,7 +274,6 @@ fn print(map: &Vec<Vec<char>>, rr: i32, rc: i32) {
     let rows = map.len();
     let cols = map[0].len();
 
-    let mut ans = 0;
     for row in 0..rows {
         for col in 0..cols {
             if rr as usize == row && rc as usize == col {
