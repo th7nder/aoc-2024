@@ -73,7 +73,7 @@ fn path(grid: &Vec<Vec<char>>) -> i32 {
         }
     }
 
-    unreachable!("didn't find path");
+    return -1;
 }
 
 #[aoc(day18, part1)]
@@ -81,6 +81,20 @@ fn part1(bytes: &Vec<(usize, usize)>) -> i32 {
     let grid = grid(bytes, 1024, 71);
 
     path(&grid)
+}
+
+#[aoc(day18, part2)]
+fn part2(bytes: &Vec<(usize, usize)>) -> String {
+    for i in 1024..=bytes.len() {
+        let grid = grid(bytes, i, 71);
+        if path(&grid) == -1 {
+            println!("Found it! {:?}", bytes[i - 1]);
+            return format!("{},{}", bytes[i - 1].0, bytes[i - 1].1);
+        }
+
+    }
+
+    unreachable!("Asd");
 }
 
 #[cfg(test)]
@@ -120,5 +134,18 @@ mod tests {
         print(&grid);
 
         assert_eq!(path(&grid), 22);
+    }
+
+    #[test]
+    fn part2_example_small() {
+        let bytes = parse_input(TEST_INPUT);
+        for i in 12..=bytes.len() {
+            let grid = grid(&bytes, i, 7);
+            if path(&grid) == -1 {
+                println!("Found it! {:?}", bytes[i - 1]);
+                break;
+            }
+    
+        }
     }
 }
