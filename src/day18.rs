@@ -1,4 +1,7 @@
-use std::{cmp::Reverse, collections::{BinaryHeap, HashMap, HashSet, VecDeque}};
+use std::{
+    cmp::Reverse,
+    collections::{BinaryHeap, HashMap, HashSet},
+};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -25,19 +28,6 @@ fn grid(bytes: &Vec<(usize, usize)>, num_bytes: usize, size: usize) -> Vec<Vec<c
 
     grid
 }
-
-fn print(grid: &Vec<Vec<char>>) {
-    let rows = grid.len();
-    let cols = grid[0].len();
-
-    for row in 0..rows {
-        for col in 0..cols {
-            print!("{}", grid[row][col]);
-        }
-        println!();
-    }
-}
-
 
 fn path(grid: &Vec<Vec<char>>) -> i32 {
     let (rows, cols) = (grid.len() as i32, grid[0].len() as i32);
@@ -91,7 +81,6 @@ fn part2(bytes: &Vec<(usize, usize)>) -> String {
             println!("Found it! {:?}", bytes[i - 1]);
             return format!("{},{}", bytes[i - 1].0, bytes[i - 1].1);
         }
-
     }
 
     unreachable!("Asd");
@@ -145,7 +134,18 @@ mod tests {
                 println!("Found it! {:?}", bytes[i - 1]);
                 break;
             }
-    
+        }
+    }
+
+    fn print(grid: &Vec<Vec<char>>) {
+        let rows = grid.len();
+        let cols = grid[0].len();
+
+        for row in 0..rows {
+            for col in 0..cols {
+                print!("{}", grid[row][col]);
+            }
+            println!();
         }
     }
 }

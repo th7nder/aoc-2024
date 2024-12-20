@@ -36,17 +36,20 @@ fn possible(design: &String, patterns: &Vec<String>, design_index: usize) -> boo
     false
 }
 
-
-
-fn ways(design: &String, patterns: &Vec<String>, design_index: usize, cache: &mut HashMap<usize, usize> ) -> usize {
+fn ways(
+    design: &String,
+    patterns: &Vec<String>,
+    design_index: usize,
+    cache: &mut HashMap<usize, usize>,
+) -> usize {
     if design_index == design.len() {
         return 1;
     }
 
-    // cache stores whether how many ways we can construct a rest of the work at the design index 
+    // cache stores whether how many ways we can construct a rest of the work at the design index
     if cache.contains_key(&design_index) {
         return *cache.get(&design_index).unwrap();
-    } 
+    }
 
     let mut w = 0;
     for pattern in patterns {
@@ -56,14 +59,13 @@ fn ways(design: &String, patterns: &Vec<String>, design_index: usize, cache: &mu
         let part = &design[design_index..design_index + pattern.len()];
         if part == pattern {
             w += ways(design, patterns, design_index + pattern.len(), cache);
-        } 
+        }
     }
 
     cache.insert(design_index, w);
 
     w
 }
-
 
 #[aoc(day19, part1)]
 fn part1((patterns, designs): &(Vec<String>, Vec<String>)) -> usize {
@@ -103,7 +105,6 @@ ubwu
 bwurrg
 brgr
 bbrgwb";
-
 
     #[test]
     fn part1_example() {

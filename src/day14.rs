@@ -33,8 +33,6 @@ fn step_all(robots: &mut Vec<Robot>, width: i32, height: i32) {
     }
 }
 
-
-
 fn print_tree(robots: &Vec<Vec<bool>>, width: i32, height: i32) {
     for y in 0..height {
         for x in 0..width {
@@ -212,7 +210,7 @@ p=9,5 v=-3,-3";
         for robot in robots {
             println!("Robot: {} {} -> {}", robot.px, robot.py, robot.py % height);
         }
-    
+
         for y in 0..height {
             for x in 0..width {
                 let mut count = 0;

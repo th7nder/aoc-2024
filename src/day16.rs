@@ -1,5 +1,7 @@
-
-use std::{cmp::Reverse, collections::{BinaryHeap, HashMap, HashSet, VecDeque}};
+use std::{
+    cmp::Reverse,
+    collections::{BinaryHeap, HashMap, HashSet, VecDeque},
+};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -7,14 +9,11 @@ use aoc_runner_derive::{aoc, aoc_generator};
 fn parse_input(text: &str) -> Vec<Vec<char>> {
     use aoc_parse::{parser, prelude::*};
 
-    let pairs = parser!(
-        lines(any_char+)
-    );
+    let pairs = parser!(lines(any_char+));
     let map: Vec<Vec<char>> = pairs.parse(text).unwrap();
 
     map
 }
-
 
 fn find_start(map: &Vec<Vec<char>>) -> (i32, i32) {
     let rows = map.len();
@@ -46,8 +45,6 @@ fn find_end(map: &Vec<Vec<char>>) -> (i32, i32) {
     unreachable!("map should always have a start");
 }
 
-
-
 fn print(map: &Vec<Vec<char>>) {
     let rows = map.len();
     let cols = map[0].len();
@@ -67,7 +64,7 @@ fn dijkstra(map: &Vec<Vec<char>>) -> (i32, Vec<Vec<(i32, i32)>>) {
     let cols = map[0].len() as i32;
 
     let (r, c) = find_start(&map);
-    
+
     println!("Initial state ({r}) ({c}):");
     print(&map);
 
@@ -111,11 +108,16 @@ fn dijkstra(map: &Vec<Vec<char>>) -> (i32, Vec<Vec<(i32, i32)>>) {
 
         let rotate_left = (-direction.1, direction.0);
         let rotate_right = (direction.1, -direction.0);
-        
+
         for (nr, nc, dir, next_distance) in vec![
-            (pos.0 + direction.0, pos.1 + direction.1, direction, distance.0 + 1),
+            (
+                pos.0 + direction.0,
+                pos.1 + direction.1,
+                direction,
+                distance.0 + 1,
+            ),
             (pos.0, pos.1, rotate_left, distance.0 + 1000),
-            (pos.0, pos.1, rotate_right, distance.0 + 1000)
+            (pos.0, pos.1, rotate_right, distance.0 + 1000),
         ] {
             // println!("Ha: {:?} {:?}", (nr, nc), dir);
             if seen.contains(&((nr, nc), dir)) {
@@ -127,12 +129,11 @@ fn dijkstra(map: &Vec<Vec<char>>) -> (i32, Vec<Vec<(i32, i32)>>) {
             }
 
             queue.push((Reverse(next_distance), (nr, nc), dir));
-            
+
             if next_distance < distances[nr as usize][nc as usize] {
                 distances[nr as usize][nc as usize] = next_distance;
                 parents[nr as usize][nc as usize] = pos;
             }
-
         }
     }
 
@@ -141,10 +142,9 @@ fn dijkstra(map: &Vec<Vec<char>>) -> (i32, Vec<Vec<(i32, i32)>>) {
     (distances[end.0 as usize][end.1 as usize], parents)
 }
 
-
 fn dijkstra2(map: &Vec<Vec<char>>) -> i32 {
     let (r, c) = find_start(&map);
-    
+
     println!("Initial state ({r}) ({c}):");
     print(&map);
 
@@ -176,9 +176,14 @@ fn dijkstra2(map: &Vec<Vec<char>>) -> i32 {
         let rotate_left = (-direction.1, direction.0);
         let rotate_right = (direction.1, -direction.0);
         for (nr, nc, dir, next_distance) in vec![
-            (pos.0 + direction.0, pos.1 + direction.1, direction, distance.0 + 1),
+            (
+                pos.0 + direction.0,
+                pos.1 + direction.1,
+                direction,
+                distance.0 + 1,
+            ),
             (pos.0, pos.1, rotate_left, distance.0 + 1000),
-            (pos.0, pos.1, rotate_right, distance.0 + 1000)
+            (pos.0, pos.1, rotate_right, distance.0 + 1000),
         ] {
             if map[nr as usize][nc as usize] == '#' {
                 continue;
@@ -192,7 +197,10 @@ fn dijkstra2(map: &Vec<Vec<char>>) -> i32 {
                 distances.insert(((nr, nc), dir), next_distance);
             }
 
-            backtrack.get_mut(&((nr, nc), dir)).unwrap().insert((pos, direction));
+            backtrack
+                .get_mut(&((nr, nc), dir))
+                .unwrap()
+                .insert((pos, direction));
             queue.push((Reverse(next_distance), (nr, nc), dir));
         }
     }
@@ -215,7 +223,7 @@ fn dijkstra2(map: &Vec<Vec<char>>) -> i32 {
         dedup.insert(np);
     }
 
-   dedup.len() as i32
+    dedup.len() as i32
 }
 
 #[aoc(day16, part1)]
@@ -234,7 +242,7 @@ fn part1(map: &Vec<Vec<char>>) -> i32 {
         }
 
         end = p;
-    }   
+    }
 
     print(&result);
 
@@ -247,7 +255,6 @@ fn part2(map: &Vec<Vec<char>>) -> i32 {
 
     score
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -271,11 +278,16 @@ mod tests {
 
     #[test]
     fn part1_example_small() {
-        assert_eq!(part1(&parse_input(r"###############
+        assert_eq!(
+            part1(&parse_input(
+                r"###############
 #....E#...#.#.#
 #.#####.#.#.#.#
 #S..#.....#...#
-###############")), 2006);
+###############"
+            )),
+            2006
+        );
     }
 
     #[test]
@@ -285,7 +297,9 @@ mod tests {
 
     #[test]
     fn part1_example2() {
-        assert_eq!(part1(&parse_input(r"#################
+        assert_eq!(
+            part1(&parse_input(
+                r"#################
 #...#...#...#..E#
 #.#.#.#.#.#.#.#.#
 #.#.#.#...#...#.#
@@ -301,12 +315,17 @@ mod tests {
 #.#.#.........#.#
 #.#.#.#########.#
 #S#.............#
-#################")), 11048);
+#################"
+            )),
+            11048
+        );
     }
 
     #[test]
     fn part2_example2() {
-        assert_eq!(part2(&parse_input(r"#################
+        assert_eq!(
+            part2(&parse_input(
+                r"#################
 #...#...#...#..E#
 #.#.#.#.#.#.#.#.#
 #.#.#.#...#...#.#
@@ -322,6 +341,9 @@ mod tests {
 #.#.#.........#.#
 #.#.#.#########.#
 #S#.............#
-#################")), 64);
+#################"
+            )),
+            64
+        );
     }
 }
