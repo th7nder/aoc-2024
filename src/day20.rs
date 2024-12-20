@@ -222,8 +222,8 @@ fn part2(map: &Vec<Vec<char>>) -> i32 {
     const CHEAT: i32 = 20;
     for ((r, c), distance_to_end) in &distances {
         let distance_to_end = benchmark - *distance_to_end;
-        for nr in r - CHEAT - 1..r + CHEAT + 1 as i32 {
-            for nc in c - CHEAT - 1..c + CHEAT + 1 as i32 {
+        for nr in r - CHEAT..r + CHEAT + 1 as i32 {
+            for nc in c - CHEAT..c + CHEAT + 1 as i32 {
                 let asd = r.abs_diff(nr) + c.abs_diff(nc);
                 if asd <= CHEAT as u32 {
                     if !distances.contains_key(&(nr, nc)) {
