@@ -94,27 +94,155 @@ fn bfs(map: &Vec<Vec<char>>) -> i32 {
     unreachable!("cannot find any path")
 }
 
+fn bfs_distances(map: &Vec<Vec<char>>) -> (i32, HashMap<(i32, i32), i32>) {
+    let (r, c) = find_start(&map);
+    let (rows, cols) = (map.len() as i32, map[0].len() as i32);
+
+    let mut queue = VecDeque::new();
+    let mut visited = HashSet::new();
+    queue.push_back((r, c, 0));
+
+    let mut distances = HashMap::new();
+
+    while let Some((r, c, distance)) = queue.pop_front() {
+        visited.insert((r, c));
+
+        distances.insert((r, c), distance);
+
+
+        if map[r as usize][c as usize] == 'E' {
+            return (distance, distances);
+        }
+        
+
+        for (nr, nc) in vec![(r + 1, c), (r - 1, c), (r, c - 1), (r, c + 1)] {
+            if map[nr as usize][nc as usize] == '#' {
+                continue;
+            }
+            if visited.contains(&(nr, nc)) {
+                continue;
+            }
+
+            queue.push_back((nr, nc, distance + 1));
+        }
+    }
+
+    unreachable!("asd")
+}
+
+fn reachable_points(map: &Vec<Vec<char>>, start: (i32, i32), max_steps: i32) -> HashSet<(i32, i32)> {
+    let (r, c) = start;
+    let (rows, cols) = (map.len() as i32, map[0].len() as i32);
+
+    let mut queue = VecDeque::new();
+    let mut visited = HashSet::new();
+    queue.push_back((r, c, 0));
+
+    let mut points = HashSet::new();
+
+    while let Some((r, c, distance)) = queue.pop_front() {
+        visited.insert((r, c));
+
+        if map[r as usize][c as usize] == '.' && distance == max_steps {
+            points.insert((r, c));
+        }
+
+        if distance + 1 > max_steps {
+            continue;
+        }
+
+        for (nr, nc) in vec![(r + 1, c), (r - 1, c), (r, c - 1), (r, c + 1)] {
+            if nr < 0 || nc < 0 || nr >= rows || nc >= cols {
+                continue;
+            }
+
+            if visited.contains(&(nr, nc)) {
+                continue;
+            }
+
+            queue.push_back((nr, nc, distance + 1));
+        }
+    }
+
+    points
+}
+
 #[aoc(day20, part1)]
 fn part1(map: &Vec<Vec<char>>) -> i32 {   
     let mut map = map.clone();
     let (rows, cols) = (map.len(), map[0].len());
 
-    let benchmark = bfs(&map);
+    let (benchmark, distances) = bfs_distances(&map);
 
+    // for ((r, c), _) in &distances {
+    //     map[*r as usize][*c as usize] = 'O';
+    // }
+    // print(&map);
     let mut ans = 0;
+    
+    const CHEAT: i32 = 2;
+    for ((r, c), distance_to_end) in &distances {
+        let distance_to_end = benchmark - *distance_to_end;
+        for nr in r - CHEAT * 2.. r + CHEAT * 2 {
+            for nc in c - CHEAT *2..c + CHEAT * 2{
+                if r.abs_diff(nr) + c.abs_diff(nc) <= CHEAT as u32 {
+                    if !distances.contains_key(&(nr, nc)) {
+                        continue;
+                    }
 
-    for r in 1..rows - 1 {
-        for c in 1..cols - 1 {
-            if map[r][c] == '#' {
-                map[r][c] = '.';
-                let score = bfs(&map);
-                if score < benchmark && benchmark - score >= 100 {
-                    ans += 1;
+                    let d = benchmark - *distances.get(&(nr, nc)).unwrap();
+                    if d < distance_to_end {
+                        let saves = distance_to_end - d - CHEAT;
+                        if saves >= 100 {
+                            ans += 1;
+                        }
+                    }
                 }
-                map[r][c] = '#';
             }
         }
     }
+
+    ans
+}
+
+#[aoc(day20, part2)]
+fn part2(map: &Vec<Vec<char>>) -> i32 {   
+    let mut map = map.clone();
+    let (rows, cols) = (map.len(), map[0].len());
+
+    let (benchmark, distances) = bfs_distances(&map);
+
+    // for ((r, c), _) in &distances {
+    //     map[*r as usize][*c as usize] = 'O';
+    // }
+    // print(&map);
+    // let mut t = BTreeMap::new();
+    let mut ans = 0;
+    
+    const CHEAT: i32 = 20;
+    for ((r, c), distance_to_end) in &distances {
+        let distance_to_end = benchmark - *distance_to_end;
+        for nr in r - CHEAT - 1..r + CHEAT + 1 as i32 {
+            for nc in c - CHEAT - 1..c + CHEAT + 1 as i32 {
+                let asd = r.abs_diff(nr) + c.abs_diff(nc);
+                if asd <= CHEAT as u32 {
+                    if !distances.contains_key(&(nr, nc)) {
+                        continue;
+                    }
+
+                    let d = benchmark - *distances.get(&(nr, nc)).unwrap();
+                    if d < distance_to_end {
+                        let saves = distance_to_end - d - asd as i32;
+                        if saves >= 100 {
+                            ans += 1;
+                            // *t.entry(saves).or_insert(0) += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 
     ans
 }
@@ -142,5 +270,10 @@ mod tests {
     #[test]
     fn part1_example_small() {
         assert_eq!(part1(&parse_input(TEST_INPUT)), 84);
+    }
+
+    #[test]
+    fn part2_example_small() {
+        assert_eq!(part2(&parse_input(TEST_INPUT)), 84);
     }
 }
