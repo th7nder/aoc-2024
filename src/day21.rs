@@ -92,6 +92,16 @@ fn all_paths_for_code(grid: &Vec<Vec<char>>, code: &Vec<char>, index: usize, ini
     }
 }
 
+fn groups(path: &Vec<char>) -> usize {
+    let mut g = 1;
+    for i in 1..path.len() {
+        if path[i] != path[i - 1] {
+            g += 1;
+        }
+    }
+    g
+}
+
 #[aoc(day21, part1)]
 fn part1(codes: &Vec<Vec<char>>) -> i32 {
     let numeric_grid = vec![
@@ -107,19 +117,21 @@ fn part1(codes: &Vec<Vec<char>>) -> i32 {
     ];
     let directional_grid_start = (0, 2);
 
-    let mut rng = rand::thread_rng();
-
     let mut ans = 0;
     for code in codes {
         let mut first_paths = Vec::new();
         all_paths_for_code(&numeric_grid, code, 0, numeric_grid_start, Vec::new(), &mut first_paths);
+
+        let min_group = first_paths.iter().map(|path| groups(&path)).min().unwrap();
+        let first_paths: Vec<Vec<char>> = first_paths.into_iter().filter(|path| groups(&path) == min_group).collect();
 
         let mut second_paths = Vec::new();
         for first_path in &first_paths {
             all_paths_for_code(&directional_grid, &first_path, 0, directional_grid_start, Vec::new(), &mut second_paths);
         }
 
-        let second_paths: Vec<Vec<char>> = second_paths.choose_multiple(&mut rng, 20).cloned().collect();
+        let min_group = second_paths.iter().map(|path| groups(&path)).min().unwrap();
+        let second_paths: Vec<Vec<char>> = second_paths.into_iter().filter(|path| groups(&path) == min_group).collect();
 
         let mut third_paths = Vec::new();
         for second_path in &second_paths {
@@ -144,6 +156,20 @@ mod tests {
     static TEST_INPUT: &str = r"029A";
 
     #[test]
+    fn ah() {
+        let x: Vec<char> = "<A^A>^^AvvvA".to_string().chars().collect();
+        let x2: Vec<char> = "<A^A^>^AvvvA".to_string().chars().collect(); 
+        
+
+        // group_size: 9,  path: <A^A^^>AvvvA
+        // group_size: 9,  path: <A^A>^^AvvvA
+        // best:           path: <A^A>^^AvvvA
+
+        assert_eq!(groups(&x), 9);
+        assert_eq!(groups(&x2), 10);
+    }
+
+    #[test]
     fn sanity1() {
         let grid = vec![
             vec!['7', '8', '9'],
@@ -160,6 +186,64 @@ mod tests {
             println!("{}", path.iter().collect::<String>())
         }
         
+    }
+
+    #[test]
+    fn sanity3() {
+        let directional_grid = vec![
+            vec!['X', '^', 'A'],
+            vec!['<', 'v', '>'],
+        ];
+        let directional_grid_start = (0, 2);
+        // v> BETTER THAN >v 
+        // <^ BETTER THAN ^<
+        // group_size: 10, path: <^^^Av>A^AvvvA 70
+        // group_size: 10, path: <^^^A>vA^AvvvA 74
+
+        let code_1: Vec<char> = "v>A".to_string().chars().collect(); 
+        let mut second_paths = Vec::new();
+        all_paths_for_code(&directional_grid, &code_1, 0, directional_grid_start, Vec::new(), &mut second_paths);
+
+        let filtered: Vec<(usize, usize, Vec<char>)> = second_paths.iter().map(|path| (groups(&path), path.len(), path.clone())).collect();
+        for (size, len, path) in filtered {
+            println!("group_size: {}, len: {}, path: {}", size, len, path.iter().collect::<String>());
+        }
+
+        println!("333333333333333333333");
+        let mut third_paths = Vec::new();
+        for second_path in &second_paths {
+            all_paths_for_code(&directional_grid, &second_path, 0, directional_grid_start, Vec::new(), &mut third_paths);
+        }
+
+        let filtered: Vec<(usize, usize, Vec<char>)> = third_paths.iter().map(|path| (groups(&path), path.len(), path.clone())).collect();
+        for (size, len, path) in filtered {
+            println!("group_size: {}, len: {}, path: {}", size, len, path.iter().collect::<String>());
+        }
+        
+
+        println!("Code 2");
+        
+        let code_1: Vec<char> = ">vA".to_string().chars().collect(); 
+        let mut second_paths = Vec::new();
+        all_paths_for_code(&directional_grid, &code_1, 0, directional_grid_start, Vec::new(), &mut second_paths);
+
+        let filtered: Vec<(usize, usize, Vec<char>)> = second_paths.iter().map(|path| (groups(&path), path.len(), path.clone())).collect();
+        for (size, len, path) in filtered {
+            println!("group_size: {}, len: {}, path: {}", size, len, path.iter().collect::<String>());
+        }
+
+        
+        println!("333333333333333333333");
+        let mut third_paths = Vec::new();
+        for second_path in &second_paths {
+            all_paths_for_code(&directional_grid, &second_path, 0, directional_grid_start, Vec::new(), &mut third_paths);
+        }
+
+        let filtered: Vec<(usize, usize, Vec<char>)> = third_paths.iter().map(|path| (groups(&path), path.len(), path.clone())).collect();
+        for (size, len, path) in filtered {
+            println!("group_size: {}, len: {}, path: {}", size, len, path.iter().collect::<String>());
+        }
+
     }
 
     #[test]
