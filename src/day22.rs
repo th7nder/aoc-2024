@@ -45,6 +45,8 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
 
     let mut sequence_to_price: Vec<HashMap<(i64, i64, i64, i64), i64>> = vec![HashMap::new(); secret_numbers.len()];
 
+    let mut seen = HashSet::new();
+
     for _ in 0..2000 {
         for (seq_id, secret_number) in secret_numbers.iter_mut().enumerate() {
             *secret_number = round(*secret_number);
@@ -60,7 +62,8 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
 
                 let tuple = (*a, *b, *c, *d);
                 if !sequence_to_price[seq_id].contains_key(&tuple) {
-                    sequence_to_price[seq_id].insert(tuple, price);
+                    sequence_to_price[seq_id].insert(tuple.clone(), price);
+                    seen.insert(tuple);
                 }
             }
 
@@ -68,28 +71,8 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
         }
     }
 
-    let mut counter = HashMap::new();
-    for sequence in sequences {
-        let mut seen = HashSet::new();
-        for quad in sequence.windows(4) {
-            let [a, b, c, d] = quad else {
-                unreachable!("Asd");
-            };
-            let tuple = (*a, *b, *c, *d);
-            if seen.contains(&tuple) {
-                continue;
-            }
-            seen.insert(tuple);
-
-            *counter.entry(tuple).or_insert(0u64) += 1u64;
-        }
-    }
-
-    let mut sorted_counts: Vec<_> = counter.into_iter().collect();
-    sorted_counts.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by frequency descending
-
     let mut max_score = 0;
-    for (tuple, _) in sorted_counts {
+    for tuple in seen {
         let mut score = 0;
         for seq_id in 0..secret_numbers.len() {
             if sequence_to_price[seq_id].contains_key(&tuple) {
@@ -97,7 +80,6 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
             }
         }
 
-        // println!("{:?}: {}", tuple, score);
         max_score = std::cmp::max(max_score, score);
     }
 
