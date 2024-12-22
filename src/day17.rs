@@ -257,7 +257,7 @@ Program: 0,3,5,4,3,0"
             .join(",")
     }
 
-    fn combo_str(operand: u64, a: &u64, b: &u64, c: &u64) -> String {
+    fn combo_str(operand: u64, _: &u64, _: &u64, _: &u64) -> String {
         match operand {
             0..=3 => operand.to_string(),
             4 => "A".to_string(),
