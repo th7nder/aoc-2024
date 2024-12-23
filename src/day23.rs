@@ -88,6 +88,60 @@ fn part1(graph: &HashMap<String, Vec<String>>) -> usize {
     ans.len()
 }
 
+
+
+fn search(
+    graph: &HashMap<String, Vec<String>>,
+    computer: String,
+    required: BTreeSet<String>,
+    paths: &mut HashSet<BTreeSet<String>>,
+) {
+    if paths.contains(&required) {
+        return;
+    }
+    paths.insert(required.clone());
+
+
+    let connections = graph.get(&computer).unwrap().clone();
+    for neighbor in &connections {
+        if required.contains(neighbor) {
+            continue;
+        }
+
+        let mut contains = true;
+        for requirement in required.iter() {
+            if !graph.get(neighbor).unwrap().contains(requirement) {
+                contains = false;
+                break;
+            }
+        }
+        if !contains {
+            continue;
+        }
+
+
+        let mut required = required.clone();
+        required.insert(neighbor.clone());
+        search(graph, neighbor.clone(), required, paths); 
+
+    }
+}
+
+#[aoc(day23, part2)]
+fn part2(graph: &HashMap<String, Vec<String>>) -> String {
+    let mut paths = HashSet::new();
+    for computer in graph.keys() {
+        // println!("{computer} -> {:?}", graph[computer]);
+        let mut set = BTreeSet::new();
+        set.insert(computer.clone());
+        search(graph, computer.clone(), set, &mut paths);
+    }
+
+    let (_, ans) = paths.into_iter().map(|s| (s.len(), s)).max().unwrap();
+
+    ans.into_iter().collect::<Vec<_>>().join(",")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -128,5 +182,10 @@ td-yn";
     #[test]
     fn p1() {
         assert_eq!(7, part1(&parse_input(TEST_INPUT)));
+    }
+
+    #[test]
+    fn p2() {
+        assert_eq!("co,de,ka,ta", part2(&parse_input(TEST_INPUT)));
     }
 }
