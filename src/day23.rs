@@ -30,13 +30,15 @@ fn dfs<'a>(
     path_len: usize,
     visited: &mut HashSet<&'a String>,
     path: &mut Vec<&'a String>,
-    paths: &mut Vec<Vec<&'a String>>,
+    paths: &mut HashSet<Vec<&'a String>>,
 ) {
     if let Some(neighbours) = graph.get(current) {
         for n in neighbours {
             if path.len() == path_len {
+                let mut path = path.clone();
+                path.sort();
                 if n == start {
-                    paths.push(path.clone());
+                    paths.insert(path);
                 }
                 continue;
             }
@@ -62,7 +64,7 @@ fn dfs<'a>(
 fn part1(graph: &HashMap<String, Vec<String>>) -> usize {
     let mut ans = BTreeSet::new();
 
-    let mut paths = Vec::new();
+    let mut paths = HashSet::new();
     for computer in graph.keys() {
         println!("{computer} -> {:?}", graph[computer]);
         let mut visited = HashSet::new();
@@ -71,8 +73,7 @@ fn part1(graph: &HashMap<String, Vec<String>>) -> usize {
         dfs(graph, computer, computer, 3, &mut visited, &mut path, &mut paths);
     }
 
-    for mut path in paths {
-        path.sort();
+    for path in paths {
         let key = format!("{},{},{}", path[0], path[1], path[2]);
   
         if path[0].starts_with("t") || path[1].starts_with("t") || path[2].starts_with("t") {
