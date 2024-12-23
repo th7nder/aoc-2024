@@ -30,10 +30,8 @@ fn part1(secret_numbers: &Vec<i64>) -> i64 {
         }
     }
 
-
     secret_numbers.iter().sum()
 }
-
 
 #[aoc(day22, part2)]
 fn part2(secret_numbers: &Vec<i64>) -> i64 {
@@ -43,7 +41,8 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
     let mut sequences: Vec<Vec<i64>> = vec![vec![]; secret_numbers.len()];
     let mut previous_prices: Vec<i64> = secret_numbers.iter().map(|n| n % 10).collect();
 
-    let mut sequence_to_price: Vec<HashMap<(i64, i64, i64, i64), i64>> = vec![HashMap::new(); secret_numbers.len()];
+    let mut sequence_to_price: Vec<HashMap<(i64, i64, i64, i64), i64>> =
+        vec![HashMap::new(); secret_numbers.len()];
 
     let mut seen = HashSet::new();
 
@@ -82,7 +81,6 @@ fn part2(secret_numbers: &Vec<i64>) -> i64 {
 
         max_score = std::cmp::max(max_score, score);
     }
-
 
     max_score
 }
