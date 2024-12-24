@@ -70,12 +70,20 @@ fn part1(graph: &HashMap<String, Vec<String>>) -> usize {
         let mut visited = HashSet::new();
         visited.insert(computer);
         let mut path = vec![computer];
-        dfs(graph, computer, computer, 3, &mut visited, &mut path, &mut paths);
+        dfs(
+            graph,
+            computer,
+            computer,
+            3,
+            &mut visited,
+            &mut path,
+            &mut paths,
+        );
     }
 
     for path in paths {
         let key = format!("{},{},{}", path[0], path[1], path[2]);
-  
+
         if path[0].starts_with("t") || path[1].starts_with("t") || path[2].starts_with("t") {
             ans.insert(key);
         }
@@ -88,8 +96,6 @@ fn part1(graph: &HashMap<String, Vec<String>>) -> usize {
     ans.len()
 }
 
-
-
 fn search(
     graph: &HashMap<String, Vec<String>>,
     computer: String,
@@ -100,7 +106,6 @@ fn search(
         return;
     }
     paths.insert(required.clone());
-
 
     let connections = graph.get(&computer).unwrap().clone();
     for neighbor in &connections {
@@ -119,11 +124,9 @@ fn search(
             continue;
         }
 
-
         let mut required = required.clone();
         required.insert(neighbor.clone());
-        search(graph, neighbor.clone(), required, paths); 
-
+        search(graph, neighbor.clone(), required, paths);
     }
 }
 
